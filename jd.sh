@@ -2,19 +2,12 @@
 
 ## Author: Evine Deng
 ## Source: https://github.com/EvineDeng/jd-base
-## Modified： 2021-01-20
-## Version： v3.6.15
+## Modified： 2021-01-22
+## Version： v3.6.16
 
 ## 路径
-if [ -z "${JD_DIR}" ]
-then
-  ShellDir=$(cd $(dirname $0); pwd)
-  HelpJd=jd.sh
-else
-  ShellDir=${JD_DIR}
-  HelpJd=jd
-fi
-
+ShellDir=${JD_DIR:-$(cd $(dirname $0); pwd)}
+[[ ${JD_DIR} ]] && HelpJd=jd || HelpJd=jd.sh
 ScriptsDir=${ShellDir}/scripts
 ConfigDir=${ShellDir}/config
 FileConf=${ConfigDir}/config.sh
@@ -40,25 +33,15 @@ function Import_Conf {
 
 ## 更新crontab
 function Detect_Cron {
-  if [[ $(cat ${ListCron}) != $(crontab -l) ]]; then
-    crontab ${ListCron}
-  fi
+  [[ $(cat ${ListCron}) != $(crontab -l) ]] && crontab ${ListCron}
 }
 
 ## 用户数量UserSum
 function Count_UserSum {
-  i=1
-  while [ $i -le 1000 ]
-  do
+  for ((i=1; i<=1000; i++)); do
     Tmp=Cookie$i
     CookieTmp=${!Tmp}
-    if [ -n "${CookieTmp}" ]
-    then
-      UserSum=$i
-    else
-      break
-    fi
-    let i++
+    [[ ${CookieTmp} ]] && UserSum=$i || break
   done
 }
 
